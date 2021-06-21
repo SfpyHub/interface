@@ -97,19 +97,19 @@ export default function Menu() {
 
       {open && (
         <MenuFlyout>
-          <MenuItem id="link" href="">
+          <MenuItem id="link" href="https://www.sfpy.co/blog/announcing-sfpy/">
             <Info size={14} />
             About
           </MenuItem>
-          <MenuItem id="link" href="">
+          <MenuItem id="link" href="https://www.sfpy.co/docs">
             <BookOpen size={14} />
             Docs
           </MenuItem>
-          <MenuItem id="link" href="">
+          <MenuItem id="link" href="https://github.com/sfpyhub">
             <Code size={14} />
             Code
           </MenuItem>
-          <MenuItem id="link" href="">
+          <MenuItem id="link" href="https://discord.gg/PQffzU78Fx">
             <MessageCircle size={14} />
             Discord
           </MenuItem>
