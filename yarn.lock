@@ -2187,9 +2187,9 @@
     picomatch "^2.2.2"
 
 "@sfpy/web3-sdk@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@sfpy/web3-sdk/-/web3-sdk-1.0.0.tgz#66e38a4778b577de9912c5816bef99000023fc2e"
-  integrity sha512-pkubro0xYTOPNc912WbvabmpfVRkbGYYvQDf/tbXfqf2jX8tYBYuXJDqRQrxKufBKXPCl1QFVrB+3Mu403kO5A==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@sfpy/web3-sdk/-/web3-sdk-1.0.2.tgz#6b02361b042945efd6146ebc69f0340a11b853bd"
+  integrity sha512-toTINqMANtk4j9ueB+cpSzzG5Yj4kxwVX2nDVlQwaF886DdVxQi1tCfjddB3qUjPcTEjveW0kxr3fMW70wJB3w==
   dependencies:
     "@ethersproject/address" "^5.3.0"
     "@ethersproject/solidity" "^5.3.0"
