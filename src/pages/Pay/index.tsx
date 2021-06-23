@@ -96,6 +96,7 @@ export default function Pay() {
   const transactions = useAllTransactions()
   const transaction = transactions[txHash]
   const isAttempting = transaction && transaction.receipt === undefined
+  const hasPaid = !isAttempting && transaction && transaction.receipt !== undefined
 
   const [approval, approveCallback] = useApproveCallbackFromPayment(rate)
   // mark when a user has submitted an approval, reset onTokenSelection for input field
@@ -313,13 +314,17 @@ export default function Pay() {
                   }}
                   width="48%"
                   id="swap-button"
-                  disabled={isAttempting || !isValid || approval !== ApprovalState.APPROVED}
+                  disabled={hasPaid || isAttempting || !isValid || approval !== ApprovalState.APPROVED}
                   error={false}
                 >
                   {isAttempting ? (
                     <AutoRow gap="6px" justify="center">
                       Paying <Loader stroke="white" />
                     </AutoRow>
+                  ) : hasPaid ? (
+                    <Text fontSize={16} fontWeight={500}>
+                      Paid
+                    </Text>
                   ) : (
                     <Text fontSize={16} fontWeight={500}>
                       {payInputError ? payInputError : 'Pay'}
