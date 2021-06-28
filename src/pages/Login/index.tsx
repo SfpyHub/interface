@@ -59,7 +59,7 @@ export default function Login({ history }) {
                   key: 'email',
                 },
                 {
-                  title: 'Private Key',
+                  title: 'SFPY API Key',
                   key: 'key',
                 },
               ]}

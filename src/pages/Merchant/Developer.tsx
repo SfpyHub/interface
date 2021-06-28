@@ -109,7 +109,7 @@ export default function Developer() {
   const { state: updateState, data: updateData, execute } = useUpdateApiKeyCallback()
 
   function formatConnectorName() {
-    return <KeyName>Your private key</KeyName>
+    return <KeyName>Your API key</KeyName>
   }
 
   const maskedText = useMemo(() => {
