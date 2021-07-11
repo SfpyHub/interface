@@ -12,6 +12,8 @@ import pay from './pay/reducer'
 import request from './requests/reducer'
 import merchant from './merchant/reducer'
 import auth from './auth/reducer'
+import secretkey from './secretkey/reducer'
+import subscriptions from './subscriptions/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists']
 
@@ -28,6 +30,8 @@ const store = configureStore({
     request,
     merchant,
     auth,
+    secretkey,
+    subscriptions
   },
   middleware: [...getDefaultMiddleware(), save({ states: PERSISTED_KEYS })],
   preloadedState: load({ states: PERSISTED_KEYS }),

@@ -194,7 +194,8 @@ export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.ROPSTEN]: 'Ropsten',
   [ChainId.GÖRLI]: 'Görli',
   [ChainId.KOVAN]: 'Kovan',
-  [ChainId.GANACHE]: 'Ganache'
+  [ChainId.GANACHE]: 'Ganache',
+  [ChainId.MAINNET]: 'Mainnet'
 }
 
 function Header({ history }: { history: any }) {
@@ -222,6 +223,11 @@ function Header({ history }: { history: any }) {
           {loggedIn && (
             <StyledNavLink id={`payments-nav-link`} to={'/requests'}>
               Requests
+            </StyledNavLink>
+          )}
+          {loggedIn && (
+            <StyledNavLink id={`webhooks-nav-link`} to={'/webhooks'}>
+              Webhooks
             </StyledNavLink>
           )}
           <StyledNavLink

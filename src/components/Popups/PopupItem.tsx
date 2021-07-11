@@ -4,9 +4,10 @@ import { useSpring } from 'react-spring/web'
 import styled, { ThemeContext } from 'styled-components'
 import { animated } from 'react-spring'
 import { PopupContent } from '../../state/application/actions'
-import { useRemovePopup } from '../../state/application/hooks'
+import { useRemovePopup, useRemoveModalError } from '../../state/application/hooks'
 import TransactionPopup from './TransactionPopup'
 import ErrorPopup from './ErrorPopup'
+import { PopupType } from './index'
 
 export const StyledClose = styled(X)`
   position: absolute;
@@ -47,15 +48,17 @@ const Fader = styled.div`
 const AnimatedFader = animated(Fader)
 
 export default function PopupItem({
+  type,
   removeAfterMs,
   content,
   popKey,
 }: {
+  type: PopupType
   removeAfterMs: number | null
   content: PopupContent
   popKey: string
 }) {
-  const removePopup = useRemovePopup()
+  const removePopup = type === PopupType.STANDARD ? useRemovePopup() : useRemoveModalError()
   const removeThisPopup = useCallback(() => removePopup(popKey), [popKey, removePopup])
   useEffect(() => {
     if (removeAfterMs === null) return undefined

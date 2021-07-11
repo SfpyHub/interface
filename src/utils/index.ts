@@ -56,7 +56,7 @@ export function getPaymentLink(environment: string, paymentId: string): string {
       return ''
 
     default:
-      return `${process.env.REACT_INTERFACE_BASE_URL}/#/pay?payment=${paymentId}`
+      return `${process.env.REACT_APP_INTERFACE_BASE_URL}/#/pay?payment=${paymentId}`
   }
 }
 

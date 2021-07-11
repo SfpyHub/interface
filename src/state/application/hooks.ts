@@ -2,7 +2,15 @@ import { useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks/useWeb3'
 import { AppState, AppDispatch } from '../index'
-import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal } from './actions'
+import { 
+  addPopup, 
+  ApplicationModal, 
+  PopupContent, 
+  removePopup, 
+  setOpenModal,
+  addModalError,
+  removeModalError
+} from './actions'
 
 export function useBlockNumber(): number | undefined {
   const { chainId } = useActiveWeb3React()
@@ -47,6 +55,18 @@ export function useToggleLinksModal(): () => void {
   return useToggleModal(ApplicationModal.LINKS)
 }
 
+export function useToggleEndpointsModal(): () => void {
+  return useToggleModal(ApplicationModal.ENDPOINT)
+}
+
+export function useToggleEventsModal(): () => void {
+  return useToggleModal(ApplicationModal.EVENTS)
+}
+
+export function useToggleSharedSecretModal(): () => void {
+  return useToggleModal(ApplicationModal.SHAREDSECRET)
+}
+
 // returns a function that allows adding a popup
 export function useAddPopup(): (content: PopupContent, key?: string) => void {
   const dispatch = useDispatch()
@@ -54,6 +74,17 @@ export function useAddPopup(): (content: PopupContent, key?: string) => void {
   return useCallback(
     (content: PopupContent, key?: string) => {
       dispatch(addPopup({ content, key }))
+    },
+    [dispatch]
+  )
+}
+
+export function useAddModalError(): (content: PopupContent, key?: string) => void {
+  const dispatch = useDispatch()
+
+  return useCallback(
+    (content: PopupContent, key?: string) => {
+      dispatch(addModalError({ content, key }))
     },
     [dispatch]
   )
@@ -70,8 +101,23 @@ export function useRemovePopup(): (key: string) => void {
   )
 }
 
+export function useRemoveModalError(): (key: string) => void {
+  const dispatch = useDispatch()
+  return useCallback(
+    (key: string) => {
+      dispatch(removeModalError({ key }))
+    },
+    [dispatch]
+  )
+}
+
 // get the list of active popups
 export function useActivePopups(): AppState['application']['popupList'] {
   const list = useSelector((state: AppState) => state.application.popupList)
+  return useMemo(() => list.filter((item) => item.show), [list])
+}
+
+export function useActiveModalErrors(): AppState['application']['modalError'] {
+  const list = useSelector((state: AppState) => state.application.modalError)
   return useMemo(() => list.filter((item) => item.show), [list])
 }

@@ -4,7 +4,15 @@ import useAxios from 'axios-hooks'
 import { Method, AxiosPromise } from 'axios'
 import { ApiError } from './error'
 import { handleError } from './utils'
-import { OrderProps, MerchantProps, ApiKeyProps, PaymentProps } from '../order'
+import { 
+  OrderProps, 
+  MerchantProps, 
+  ApiKeyProps, 
+  PaymentProps,
+  EventTypeProps,
+  SharedSecretProps,
+  SubscriptionProps
+} from '../order'
 
 export const fetcher = async (url, token) => {
   const res = await axios.get(url, {
@@ -78,6 +86,19 @@ export type PaymentsResponse = {
 
 export type PaymentResponse = {
   data?: PaymentProps
+}
+
+export type EventTypeResponse = {
+  data?: EventTypeProps
+}
+
+export type SharedSecretResponse = {
+  data?: SharedSecretProps
+}
+
+export type SubscriptionResponse = {
+  data?: SubscriptionProps
+  metadata?: Metadata
 }
 
 export enum ApiState {

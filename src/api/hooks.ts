@@ -14,6 +14,9 @@ import {
   ApiKeyResponse,
   PaymentsResponse,
   PaymentResponse,
+  EventTypeResponse,
+  SharedSecretResponse,
+  SubscriptionResponse,
 } from './api'
 
 export type IOrderResponse = ApiResponse & { data?: OrderResponse }
@@ -23,6 +26,9 @@ export type IPaymentResponse = ApiResponse & { data?: PaymentResponse }
 export type IMerchantResponse = ApiResponse & { data?: MerchantResponse }
 export type IApiKeyResponse = ApiResponse & { data?: ApiKeyResponse }
 export type IAuthResponse = ApiResponse & { data?: AuthResponse }
+export type IEventTypeResponse = ApiResponse & { data?: EventTypeResponse }
+export type ISharedSecretResponse = ApiResponse & { data?: SharedSecretResponse }
+export type ISubscriptionResponse = ApiResponse & { data?: SubscriptionResponse }
 
 const BASE_URL = process.env.REACT_APP_BASE_URL
 
@@ -229,6 +235,83 @@ export function useConfirmPasswordReset(): ApiResponse {
 
 export function useCancelOrder(token: string): ApiResponse {
   const url = `${BASE_URL}/v1/order/cancel?token=${token}`
+  const result = usePostRequest(url)
+  return useMemo(() => {
+    const { data, state, error, execute } = result
+    return {
+      data: data?.data,
+      state,
+      error,
+      execute
+    }
+  }, [result])
+}
+
+export function useEventType(token: string): IEventTypeResponse {
+  const url = `${BASE_URL}/v1/notify/events`
+  const result = useApiRequest(url, token)
+  return useMemo(() => {
+    const { data, state, error } = result
+    return {
+      data: {
+        data: data?.data,
+      },
+      state,
+      error,
+    }
+  }, [result])
+}
+
+export function useSharedSecret(token: string): ISharedSecretResponse {
+  const url = `${BASE_URL}/v1/notify/secret`
+  const result = useApiRequest(url, token)
+  return useMemo(() => {
+    const { data, state, error } = result
+    return {
+      data: {
+        data: data?.data,
+      },
+      state,
+      error,
+    }
+  }, [result])
+}
+
+export function useUpdateSharedSecret(): ISharedSecretResponse {
+  const url = `${BASE_URL}/v1/notify/secret`
+  const result = usePutRequest(url)
+  return useMemo(() => {
+    const { data, state, error, execute } = result
+    return {
+      data: {
+        data: data?.data,
+      },
+      state,
+      error,
+      execute,
+    }
+  }, [result])
+}
+
+export function useFetchSubscriptions(params: Params, token: string): ISubscriptionResponse {
+  const stringified = stringify(params)
+  const url = `${BASE_URL}/v1/notify/subscription?${stringified}`
+  const result = useApiRequest(url, token)
+  return useMemo(() => {
+    const { data, state, error } = result
+    return {
+      data: {
+        data: data?.data,
+        metadata: data?.metadata,
+      },
+      state,
+      error,
+    }
+  }, [result])
+}
+
+export function useCreateSubscription(): ISubscriptionResponse {
+  const url = `${BASE_URL}/v1/notify/subscription`
   const result = usePostRequest(url)
   return useMemo(() => {
     const { data, state, error, execute } = result
