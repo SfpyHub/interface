@@ -5,13 +5,25 @@ import { AppDispatch, AppState } from '../index'
 import { useApiErrorPopup } from '../../hooks/useApiErrorPopup'
 import { useApiModalError } from '../../hooks/useApiModalError'
 import { useDerivedAuthState } from '../auth/hooks'
-import { useToggleEndpointsModal } from '../application/hooks'
-import { Field, resetTypeState, typeInput, setPage, setSubscriptions, setApiState, setCacheBuster } from './actions'
+import { useToggleEndpointsModal, useToggleDeleteSubscriptionModal } from '../application/hooks'
+import { 
+  Field, 
+  resetTypeState, 
+  typeInput, 
+  setPage, 
+  setSubscriptions, 
+  setApiState, 
+  setCacheBuster,
+  setSelected,
+  unsetSelected
+} from './actions'
 import {
   ApiState,
   Metadata,
   useCreateSubscription,
-  useFetchSubscriptions
+  useFetchSubscriptions,
+  useUpdateSubscription,
+  useDeleteSubscription
 } from '../../api'
 
 export function useSubscriptionsState(): AppState['subscriptions'] {
@@ -41,6 +53,26 @@ export function useCreateSubscriptionActionHandlers(): {
   }
 }
 
+export function useSelectSubscriptionActionHandlers(): {
+  onSetSubsription: (s: Subscription) => void
+  onUnsetSubscription: () => void
+} {
+  const dispatch = useDispatch<AppDispatch>()
+
+  const onSetSubsription = useCallback((s: Subscription) => {
+    dispatch(setSelected({ token: s.token }))
+  }, [dispatch])
+
+  const onUnsetSubscription = useCallback(() => {
+    dispatch(unsetSelected())
+  }, [dispatch])
+
+  return {
+    onSetSubsription,
+    onUnsetSubscription
+  }
+}
+
 export function usePaginateSubscriptionsActionHandlers(): {
   onClickNext: () => void
   onClickPrev: () => void
@@ -59,6 +91,116 @@ export function usePaginateSubscriptionsActionHandlers(): {
   return {
     onClickNext,
     onClickPrev,
+  }
+}
+
+export function useDeleteSubscriptionCallback(): {
+  state: ApiState
+  execute: () => void
+} {
+  const dispatch = useDispatch<AppDispatch>()
+  const toggleDeleteModal = useToggleDeleteSubscriptionModal()
+  const { apikey } = useDerivedAuthState()
+  const { selected } = useSubscriptionsState()
+  const { onUnsetSubscription } = useSelectSubscriptionActionHandlers()
+
+  const { data, state, error, execute: deleteSubscription } = useDeleteSubscription()
+  // show popup on error
+  useApiModalError(error)
+
+  const handleSubmit = useCallback(() => {
+    if (!deleteSubscription) {
+      return
+    }
+
+    deleteSubscription({
+      headers: {
+        'X-SFPY-API-KEY': apikey?.pvtKey,
+      },
+      data: {
+        subscription_service: {
+          subscription: {
+            kind: "DELETE",
+            token: selected.subscription
+          }
+        }
+      }
+    })
+    .then(() => {
+      toggleDeleteModal()
+    })
+    .catch(() => {})
+  }, [selected, toggleDeleteModal, deleteSubscription, apikey])
+
+  useEffect(() => {
+    if (state === ApiState.LOADING) return
+    if (state === ApiState.ERROR) return
+    
+    onUnsetSubscription()
+    dispatch(setPage({ page: 0 }))
+    dispatch(setCacheBuster({ attempt: 1 }))
+  }, [state, onUnsetSubscription, dispatch, setPage, setCacheBuster])
+
+  return {
+    state: state,
+    execute: handleSubmit
+  }
+}
+
+export function useUpdateSubscriptionCallback(): {
+  state: ApiState
+  execute: () => void
+} {
+
+  const dispatch = useDispatch<AppDispatch>()
+  const toggleEndpointsModal = useToggleEndpointsModal()
+  const { selected, create } = useSubscriptionsState()
+  const { apikey } = useDerivedAuthState()
+  const { onResetState } = useCreateSubscriptionActionHandlers()
+  const { onUnsetSubscription } = useSelectSubscriptionActionHandlers()
+  const { data, state, error, execute: updateSubscription } = useUpdateSubscription()
+  // show popup on error
+  useApiModalError(error)
+
+  const handleSubmit = useCallback(() => {
+    if (!updateSubscription) {
+      return
+    }
+
+    updateSubscription({
+      headers: {
+        'X-SFPY-API-KEY': apikey?.pvtKey,
+      },
+      data: {
+        subscription_service: {
+          subscription: {
+            kind: "UPDATE",
+            token: selected.subscription,
+            endpoint: create[Field.ENDPOINT]
+          }
+        }
+      }
+    })
+    .then(() => {
+      toggleEndpointsModal()
+    })
+    .catch(() => {})
+  }, [create, selected, toggleEndpointsModal, updateSubscription, apikey])
+
+  const props = data ? (data as SubscriptionProps) : undefined
+  useEffect(() => {
+    if (!props) return
+    if (state === ApiState.LOADING) return
+    if (state === ApiState.ERROR) return
+    
+    onResetState(Field.ENDPOINT)
+    onUnsetSubscription()
+    dispatch(setCacheBuster({ attempt: 1 }))
+  }, [state, props, onResetState, onUnsetSubscription, dispatch, setCacheBuster ])
+
+  return {
+    state: state,
+    execute: handleSubmit
   }
 }
 
@@ -109,7 +251,7 @@ export function useCreateSubscriptionCallback(): {
     onResetState(Field.ENDPOINT)
     dispatch(setPage({ page: 0 }))
     dispatch(setCacheBuster({ attempt: 1 }))
-  }, [state, props, onResetState, dispatch, setPage ])
+  }, [state, props, onResetState, dispatch, setPage, setCacheBuster ])
 
   return {
     state: state,

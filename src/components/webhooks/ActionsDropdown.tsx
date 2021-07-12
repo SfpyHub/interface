@@ -37,10 +37,12 @@ const StyledButtonError = styled(ButtonError)`
 
 export function ActionsDropdown({
   onClickDetails,
-  onClickDelete
+  onClickDelete,
+  onClickUpdate
 }: {
   onClickDetails: () => void
   onClickDelete:() => void
+  onClickUpdate:() => void
 }) {
 
   const [open, toggle] = useToggle(false)
@@ -56,6 +58,21 @@ export function ActionsDropdown({
 
   useOnClickOutside(node, open ? toggle : undefined)
 
+  function handleClickDelete() {
+    toggle()
+    onClickDelete()
+  }
+
+  function handleClickUpdate() {
+    toggle()
+    onClickUpdate()
+  }
+
+  function handleClickDetails() {
+    toggle()
+    onClickDetails()
+  }
+
   return (
     <RightMenu ref={node as any}>
       <ResponseButtonSecondary onClick={toggle} ref={setReferenceElement} padding="0">
@@ -63,13 +80,13 @@ export function ActionsDropdown({
       </ResponseButtonSecondary>
       {open && (
         <StyledPopoverContainer show={true} ref={setPopperElement as any} style={styles.popper} {...attributes.popper}>
-          <StyledButtonPrimary onClick={onClickDetails} disabled={false}>
+          <StyledButtonPrimary onClick={handleClickDetails} disabled={false}>
             Details
           </StyledButtonPrimary>
-          <StyledButtonPrimary onClick={() => {}} disabled={false}>
+          <StyledButtonPrimary onClick={handleClickUpdate} disabled={false}>
             Update
           </StyledButtonPrimary>
-          <StyledButtonError onClick={onClickDelete} error={true}>
+          <StyledButtonError onClick={handleClickDelete} error={true}>
             Delete
           </StyledButtonError>
         </StyledPopoverContainer>

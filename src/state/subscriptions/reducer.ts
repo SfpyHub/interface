@@ -8,12 +8,17 @@ import {
   setApiState, 
   setPage,
   setCacheBuster,
+  setSelected,
+  unsetSelected,
   resetTypeState
 } from './actions'
 
 export interface SubscriptionsState {
   readonly create: {
     readonly [key: string]: string
+  }
+  readonly selected: {
+    readonly subscription: string 
   }
   readonly subscriptions?: SubscriptionProps[]
   readonly metadata?: Metadata | null
@@ -27,6 +32,9 @@ export interface SubscriptionsState {
 const initialState: SubscriptionsState = {
   create: {
     [Field.ENDPOINT]: ""
+  },
+  selected: {
+    subscription: ""
   },
   subscriptions: [],
   metadata: null,
@@ -54,6 +62,12 @@ export default createReducer<SubscriptionsState>(initialState, (builder) =>
     })
     .addCase(setCacheBuster, (state, { payload: { attempt } }) => {
       state.cachebuster += attempt
+    })
+    .addCase(setSelected, (state, { payload: { token } }) => {
+      state.selected.subscription = token
+    })
+    .addCase(unsetSelected, (state) => {
+      state.selected.subscription = initialState.selected.subscription
     })
     .addCase(setPage, (state, { payload: { page } }) => {
       page = page < 0 ? 0 : page

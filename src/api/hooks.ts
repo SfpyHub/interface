@@ -325,9 +325,23 @@ export function useCreateSubscription(): ISubscriptionResponse {
   }, [result])
 }
 
-export function useDeleteSubscription(token: string): ApiResponse {
+export function useDeleteSubscription(): ApiResponse {
   const url = `${BASE_URL}/v1/notify/subscription`
   const result = useDeleteRequest(url)
+  return useMemo(() => {
+    const { data, state, error, execute } = result
+    return {
+      data: data?.data,
+      state,
+      error,
+      execute
+    }
+  }, [result])
+}
+
+export function useUpdateSubscription(): ISubscriptionResponse {
+  const url = `${BASE_URL}/v1/notify/subscription`
+  const result = usePutRequest(url)
   return useMemo(() => {
     const { data, state, error, execute } = result
     return {

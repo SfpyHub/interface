@@ -96,12 +96,14 @@ export const HoverText = styled.div`
 `
 
 export function CreateEndpointModal({
+  update,
   value,
   loading,
   inputError,
   onChangeEndpoint,
   onClickSave
 }: {
+  update: boolean,
   value: string,
   inputError?: string
   loading: boolean
@@ -140,7 +142,9 @@ export function CreateEndpointModal({
           <CloseColor />
         </CloseIcon>
         <HeaderRow>
-          <HoverText>New Webhook Subscription</HoverText>
+          <HoverText>
+            { update ? 'Update Webhook Endpoint' : 'New Webhook Subscription' }
+          </HoverText>
         </HeaderRow>
         <ContentWrapper>
           <ModalPopup />

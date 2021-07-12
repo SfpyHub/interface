@@ -16,6 +16,7 @@ import { useActiveWeb3React } from '../../hooks/useWeb3'
 import Loader from '../../components/Loader'
 import { Subscription } from '../../order'
 import { ApiState } from '../../api'
+import { Field } from '../../state/subscriptions/actions'
 import { 
   useToggleEndpointsModal, 
   useToggleEventsModal, 
@@ -35,10 +36,14 @@ import {
   useSubscriptionsMetadata,
   useSubscriptionsResponse,
   useDerivedCreateInfo,
+  useSubscriptionsState,
   useCreateSubscriptionCallback,
   useDerivedPaginationInfo,
   usePaginateSubscriptionsActionHandlers,
-  useCreateSubscriptionActionHandlers
+  useCreateSubscriptionActionHandlers,
+  useSelectSubscriptionActionHandlers,
+  useDeleteSubscriptionCallback,
+  useUpdateSubscriptionCallback
 } from '../../state/subscriptions/hooks'
 
 
@@ -111,6 +116,7 @@ export default function Webhooks() {
   const toggleEndpointsModal = useToggleEndpointsModal()
   const toggleEventsModal = useToggleEventsModal()
   const toggleSecretModal = useToggleSharedSecretModal()
+  const toggleDeleteModal = useToggleDeleteSubscriptionModal()
 
   const state = useSubscriptionApiState()
   const { offset } = useSubscriptionsMetadata()
@@ -122,23 +128,38 @@ export default function Webhooks() {
   const { onUserInput } = useCreateSubscriptionActionHandlers()
   const { fields, inputError: createSubscriptionInputError } = useDerivedCreateInfo()
 
-  function onClickDeleteSubscription(subscription: string) {
-    console.log(subscription)
+  const { onSetSubsription } = useSelectSubscriptionActionHandlers()
+  const { state: deleteState, execute: handleDeleteSubscription } = useDeleteSubscriptionCallback()
+
+  const { selected } = useSubscriptionsState()
+  const isUpdate = selected.subscription.length > 0
+  const { state: updateState, execute: handleUpdateSubscription } = useUpdateSubscriptionCallback()
+
+  function onClickDeleteSubscription(subscription: Subscription) {
+    onSetSubsription(subscription)
+    toggleDeleteModal()
+  }
+
+  function onClickUpdateSubscription(subscription: Subscription) {
+    onUserInput(Field.ENDPOINT, subscription.endpoint)
+    onSetSubsription(subscription)
+    toggleEndpointsModal()
   }
 
   return (
     <>
       <PageWrapper gap="lg" justify="center">
         <CreateEndpointModal
+          update={isUpdate}
           value={fields.ENDPOINT}
-          loading={createState === ApiState.LOADING}
           onChangeEndpoint={onUserInput}
-          onClickSave={handleCreateSubscription}
+          loading={isUpdate ? updateState === ApiState.LOADING : createState === ApiState.LOADING}
+          onClickSave={isUpdate ? handleUpdateSubscription : handleCreateSubscription}
           inputError={createSubscriptionInputError}
         />
         <DeleteSubscriptionModal 
-          loading={false}
-          onClickDelete={() => {}}
+          loading={deleteState === ApiState.LOADING}
+          onClickDelete={handleDeleteSubscription}
         />
         <ManageEventsModal />
         <SharedSecretModal />
@@ -194,7 +215,7 @@ export default function Webhooks() {
             {!account ? (
               <Card padding="40px">
                 <TYPE.body color={theme.text3} textAlign="center">
-                  Connect to a wallet to view your liquidity.
+                  Connect to a wallet to view your webhooks.
                 </TYPE.body>
               </Card>
             ) : state === ApiState.LOADING ? (
@@ -218,7 +239,8 @@ export default function Webhooks() {
                     </EndpointURL>
                     <ActionsDropdown 
                       onClickDetails={toggleEventsModal}
-                      onClickDelete={() => onClickDeleteSubscription(s.token)}
+                      onClickUpdate={() => onClickUpdateSubscription(s)}
+                      onClickDelete={() => onClickDeleteSubscription(s)}
                     />
                   </GroupingRow>
                 </Endpoint>
