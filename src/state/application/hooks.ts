@@ -67,6 +67,10 @@ export function useToggleSharedSecretModal(): () => void {
   return useToggleModal(ApplicationModal.SHAREDSECRET)
 }
 
+export function useToggleDeleteSubscriptionModal(): () => void {
+  return useToggleModal(ApplicationModal.DEL_SUBSCRIPTION)
+}
+
 // returns a function that allows adding a popup
 export function useAddPopup(): (content: PopupContent, key?: string) => void {
   const dispatch = useDispatch()

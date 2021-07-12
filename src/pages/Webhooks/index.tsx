@@ -10,12 +10,18 @@ import { ButtonPrimary, ButtonSecondary, ButtonLight } from '../../components/Bu
 import { CreateEndpointModal } from '../../components/webhooks/CreateEndpointModal'
 import { ManageEventsModal } from '../../components/webhooks/ManageEventsModal'
 import { SharedSecretModal } from '../../components/webhooks/SharedSecretModal'
+import { DeleteSubscriptionModal } from '../../components/webhooks/DeleteSubscriptionModal'
 import { ActionsDropdown } from '../../components/webhooks/ActionsDropdown'
 import { useActiveWeb3React } from '../../hooks/useWeb3'
-import { useToggleEndpointsModal, useToggleEventsModal, useToggleSharedSecretModal } from '../../state/application/hooks'
 import Loader from '../../components/Loader'
 import { Subscription } from '../../order'
 import { ApiState } from '../../api'
+import { 
+  useToggleEndpointsModal, 
+  useToggleEventsModal, 
+  useToggleDeleteSubscriptionModal, 
+  useToggleSharedSecretModal 
+} from '../../state/application/hooks'
 import { 
   CardSection, 
   DataCard,
@@ -129,6 +135,10 @@ export default function Webhooks() {
           onChangeEndpoint={onUserInput}
           onClickSave={handleCreateSubscription}
           inputError={createSubscriptionInputError}
+        />
+        <DeleteSubscriptionModal 
+          loading={false}
+          onClickDelete={() => {}}
         />
         <ManageEventsModal />
         <SharedSecretModal />

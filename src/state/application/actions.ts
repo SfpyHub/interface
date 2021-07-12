@@ -24,6 +24,7 @@ export enum ApplicationModal {
   LINEITEM,
   LINKS,
   ENDPOINT,
+  DEL_SUBSCRIPTION,
   EVENTS,
   SHAREDSECRET
 }
