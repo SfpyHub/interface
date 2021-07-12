@@ -36,9 +36,11 @@ const StyledButtonError = styled(ButtonError)`
 `
 
 export function ActionsDropdown({
-  onClickDetails
+  onClickDetails,
+  onClickDelete
 }: {
   onClickDetails: () => void
+  onClickDelete:() => void
 }) {
 
   const [open, toggle] = useToggle(false)
@@ -67,7 +69,7 @@ export function ActionsDropdown({
           <StyledButtonPrimary onClick={() => {}} disabled={false}>
             Update
           </StyledButtonPrimary>
-          <StyledButtonError error={true}>
+          <StyledButtonError onClick={onClickDelete} error={true}>
             Delete
           </StyledButtonError>
         </StyledPopoverContainer>

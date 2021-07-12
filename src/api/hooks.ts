@@ -3,6 +3,7 @@ import { stringify } from 'qs'
 import {
   useApiRequest,
   usePostRequest,
+  useDeleteRequest,
   usePutRequest,
   useGetRequest,
   Params,
@@ -313,6 +314,20 @@ export function useFetchSubscriptions(params: Params, token: string): ISubscript
 export function useCreateSubscription(): ISubscriptionResponse {
   const url = `${BASE_URL}/v1/notify/subscription`
   const result = usePostRequest(url)
+  return useMemo(() => {
+    const { data, state, error, execute } = result
+    return {
+      data: data?.data,
+      state,
+      error,
+      execute
+    }
+  }, [result])
+}
+
+export function useDeleteSubscription(token: string): ApiResponse {
+  const url = `${BASE_URL}/v1/notify/subscription`
+  const result = useDeleteRequest(url)
   return useMemo(() => {
     const { data, state, error, execute } = result
     return {

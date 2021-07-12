@@ -131,6 +131,10 @@ export function usePostRequest(url: string): ApiResponse {
   return useGenericRequest('POST', url)
 }
 
+export function useDeleteRequest(url: string): ApiResponse {
+  return useGenericRequest('DELETE', url)
+}
+
 export function usePutRequest(url: string): ApiResponse {
   return useGenericRequest('PUT', url)
 }

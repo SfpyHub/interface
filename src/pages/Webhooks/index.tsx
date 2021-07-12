@@ -116,6 +116,10 @@ export default function Webhooks() {
   const { onUserInput } = useCreateSubscriptionActionHandlers()
   const { fields, inputError: createSubscriptionInputError } = useDerivedCreateInfo()
 
+  function onClickDeleteSubscription(subscription: string) {
+    console.log(subscription)
+  }
+
   return (
     <>
       <PageWrapper gap="lg" justify="center">
@@ -204,6 +208,7 @@ export default function Webhooks() {
                     </EndpointURL>
                     <ActionsDropdown 
                       onClickDetails={toggleEventsModal}
+                      onClickDelete={() => onClickDeleteSubscription(s.token)}
                     />
                   </GroupingRow>
                 </Endpoint>
