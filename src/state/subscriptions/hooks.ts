@@ -5,7 +5,7 @@ import { AppDispatch, AppState } from '../index'
 import { useApiErrorPopup } from '../../hooks/useApiErrorPopup'
 import { useApiModalError } from '../../hooks/useApiModalError'
 import { useDerivedAuthState } from '../auth/hooks'
-import { useToggleEndpointsModal, useToggleDeleteSubscriptionModal } from '../application/hooks'
+import { useToggleEndpointsModal, useToggleDeleteSubscriptionModal, useToggleEventsModal } from '../application/hooks'
 import { 
   Field, 
   resetTypeState, 
@@ -23,7 +23,8 @@ import {
   useCreateSubscription,
   useFetchSubscriptions,
   useUpdateSubscription,
-  useDeleteSubscription
+  useDeleteSubscription,
+  useSubscribe
 } from '../../api'
 
 export function useSubscriptionsState(): AppState['subscriptions'] {
@@ -197,6 +198,59 @@ export function useUpdateSubscriptionCallback(): {
     onUnsetSubscription()
     dispatch(setCacheBuster({ attempt: 1 }))
   }, [state, props, onResetState, onUnsetSubscription, dispatch, setCacheBuster ])
+
+  return {
+    state: state,
+    execute: handleSubmit
+  }
+}
+
+export function useSubscribeCallback(): {
+  state: ApiState
+  execute: (toAdd: string[], toRemove: string[]) => void
+} {
+  const dispatch = useDispatch<AppDispatch>()
+  const toggleEventsModal = useToggleEventsModal()
+  const { apikey } = useDerivedAuthState()
+  const { selected } = useSubscriptionsState()
+  const { onUnsetSubscription } = useSelectSubscriptionActionHandlers()
+  const { data, state, error, execute: subscribe } = useSubscribe()
+  // show popup on error
+  useApiModalError(error)
+
+  const handleSubmit = useCallback((toAdd: string[], toRemove: string[]) => {
+    if (!subscribe) {
+      return
+    }
+
+    subscribe({
+      headers: {
+        'X-SFPY-API-KEY': apikey?.pvtKey,
+      },
+      data: {
+        subscription_service: {
+          subscription: {
+            kind: "SUBSCRIBE",
+            token: selected.subscription,
+            events_to_add: toAdd,
+            events_to_remove: toRemove
+          }
+        }
+      }
+    })
+    .then(() => {
+      toggleEventsModal()
+    })
+    .catch(() => {})
+  }, [selected, toggleEventsModal, subscribe, apikey])
+
+  useEffect(() => {
+    if (state === ApiState.LOADING) return
+    if (state === ApiState.ERROR) return
+    
+    onUnsetSubscription()
+    dispatch(setCacheBuster({ attempt: 1 }))
+  }, [state, dispatch, onUnsetSubscription, setCacheBuster])
 
   return {
     state: state,

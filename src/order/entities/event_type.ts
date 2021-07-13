@@ -22,4 +22,8 @@ export class EventType {
   public get description(): string | undefined {
     return this._description
   }
+
+  public isEqual(evt: EventType): boolean {
+    return this.name === evt.name
+  }
 }

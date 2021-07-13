@@ -11,7 +11,8 @@ import {
   PaymentProps,
   EventTypeProps,
   SharedSecretProps,
-  SubscriptionProps
+  SubscriptionProps,
+  SubscribedEventProps
 } from '../order'
 
 export const fetcher = async (url, token) => {
@@ -99,6 +100,10 @@ export type SharedSecretResponse = {
 export type SubscriptionResponse = {
   data?: SubscriptionProps
   metadata?: Metadata
+}
+
+export type SubscribeResponse = {
+  data?: SubscribedEventProps
 }
 
 export enum ApiState {

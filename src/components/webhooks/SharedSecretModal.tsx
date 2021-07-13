@@ -13,7 +13,6 @@ import { setSharedSecret } from '../../state/secretkey/actions'
 import Circle from '../../assets/images/blue-loader.svg'
 import {
   useSharedSecretResponse,
-  useDerivedSharedSecretInfo,
   useUpdateSharedSecretCallback,
   useSharedSecretApiState
 } from '../../state/secretkey/hooks'
@@ -52,7 +51,6 @@ export function SharedSecretModal() {
   useEffect(() => {
     if (updateData) {
       dispatch(setSharedSecret({ secret: updateData }))
-      console.log(updateData)
       const secret = new SharedSecret(updateData as SharedSecretProps)
       setSecret(secret)
     }

@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { Settings } from 'react-feather'
 import { usePopper } from 'react-popper'
+import { EventType, Subscription } from '../../order'
 import Row, { RowFixed } from '../Row'
 import Column, { AutoColumn } from '../Column'
 import { ButtonEmpty } from '../Button'
@@ -16,14 +17,14 @@ const Wrapper = styled(Column)`
 `
 
 const RowWrapper = styled(Row)<{ bgColor: string; active: boolean }>`
-  background-color: ${({ bgColor, active, theme }) => (active ? bgColor ?? 'transparent' : theme.bg2)};
+  background-color: ${({ bgColor, active, theme }) => (active ? bgColor ?? 'transparent' : theme.bg1)};
   transition: 200ms;
   align-items: center;
   padding: 1rem;
   border-radius: 20px;
 `
 
-const StyledTitleText = styled.div<{ active: boolean }>`
+const StyledTitleText = styled(TYPE.main)<{ active: boolean }>`
   font-size: 16px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -69,11 +70,15 @@ export const StyledMenu = styled.div`
   border: none;
 `
 
-export function EventsRow() {
-  const [isActive, setIsActive] = useState(false)
+export function EventsRow({ active, event, onToggleEvent }: { 
+  active: boolean, 
+  event: EventType,
+  onToggleEvent: (event: EventType, active: boolean) => void
+}) {
   const listColor = "#38b2c4"
   const theme = useTheme()
 
+  const [isActive, setIsActive] = useState<boolean>(active)
   const [open, toggle] = useToggle(false)
   const node = useRef<HTMLDivElement>()
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement>()
@@ -87,17 +92,24 @@ export function EventsRow() {
 
   useOnClickOutside(node, open ? toggle : undefined)
 
+  function onToggle() {
+    setIsActive(!isActive)
+  }
+
+  useEffect(() => {
+    onToggleEvent(event, isActive)
+  }, [event, isActive])
+
   return (
     <RowWrapper active={isActive} bgColor={listColor}>
       <Column style={{ flex: '1' }}>
         <Row>
-          <StyledTitleText active={isActive}>payment:created</StyledTitleText>
-        </Row>
-        <RowFixed mt="4px">
-          <StyledDescriptionText active={isActive} mr="6px">Event fired when a payment is made</StyledDescriptionText>
+          <StyledTitleText active={isActive} mr="12px">
+            { event.name }
+          </StyledTitleText>
           <StyledMenu ref={node as any}>
             <ButtonEmpty onClick={toggle} ref={setReferenceElement} padding="0">
-              <Settings stroke={isActive ? theme.bg1 : theme.text1} size={12} />
+              <Settings stroke={isActive  ? theme.bg1 : theme.text1} size={16} />
             </ButtonEmpty>
             {open && (
               <PopoverContainer show={true} ref={setPopperElement as any} style={styles.popper} {...attributes.popper}>
@@ -107,12 +119,17 @@ export function EventsRow() {
               </PopoverContainer>
             )}
           </StyledMenu>
+        </Row>
+        <RowFixed mt="4px">
+          <StyledDescriptionText active={isActive}>
+            { event.description }
+          </StyledDescriptionText>
         </RowFixed>
       </Column>
       <EventToggle
         isActive={isActive}
         bgColor={listColor}
-        toggle={() => setIsActive(!isActive)}
+        toggle={onToggle}
       />
     </RowWrapper>
 
@@ -120,18 +137,28 @@ export function EventsRow() {
 }
 
 const EventsContainer = styled.div`
-  padding: 1rem;
   height: 100%;
   overflow: auto;
   padding-bottom: 80px;
 `
 
-export function ManageEvents() {
+export function ManageEvents({ subscription, events, onToggleEvent }: { 
+  subscription?: Subscription, 
+  events: EventType[],
+  onToggleEvent: (event: EventType, active: boolean) => void
+}) {
   return (
     <Wrapper>
       <EventsContainer>
         <AutoColumn gap="md">
-          <EventsRow />
+          {events.map((e, i) => {
+            return <EventsRow 
+              key={i} 
+              event={e}
+              onToggleEvent={onToggleEvent}
+              active={subscription ? subscription.isSubscribed(e) : false} 
+            />
+          })}
         </AutoColumn>
       </EventsContainer>
     </Wrapper>

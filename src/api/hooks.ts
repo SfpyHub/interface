@@ -18,6 +18,7 @@ import {
   EventTypeResponse,
   SharedSecretResponse,
   SubscriptionResponse,
+  SubscribeResponse
 } from './api'
 
 export type IOrderResponse = ApiResponse & { data?: OrderResponse }
@@ -30,6 +31,7 @@ export type IAuthResponse = ApiResponse & { data?: AuthResponse }
 export type IEventTypeResponse = ApiResponse & { data?: EventTypeResponse }
 export type ISharedSecretResponse = ApiResponse & { data?: SharedSecretResponse }
 export type ISubscriptionResponse = ApiResponse & { data?: SubscriptionResponse }
+export type ISubscribeResponse = ApiResponse & { data?: SubscribeResponse }
 
 const BASE_URL = process.env.REACT_APP_BASE_URL
 
@@ -342,6 +344,20 @@ export function useDeleteSubscription(): ApiResponse {
 export function useUpdateSubscription(): ISubscriptionResponse {
   const url = `${BASE_URL}/v1/notify/subscription`
   const result = usePutRequest(url)
+  return useMemo(() => {
+    const { data, state, error, execute } = result
+    return {
+      data: data?.data,
+      state,
+      error,
+      execute
+    }
+  }, [result])
+}
+
+export function useSubscribe(): ISubscribeResponse {
+  const url = `${BASE_URL}/v1/notify/subscribe`
+  const result = usePostRequest(url)
   return useMemo(() => {
     const { data, state, error, execute } = result
     return {

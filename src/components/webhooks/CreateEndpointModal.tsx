@@ -159,18 +159,18 @@ export function CreateEndpointModal({
       <Wrapper>
         {getModalContent()}
         <AutoRow padding="12px">
-        {loading ? (
-          <ButtonLight disabled>
-            Loading
-            <Dots />
-          </ButtonLight>  
-        ) : (
-          <ButtonError onClick={onClickSave} disabled={!!inputError} id="confirm-save-endpoint">
-            <Text fontSize={20} fontWeight={500}>
-            {inputError ? inputError : 'Save'}
-            </Text>
-          </ButtonError>
-        )}
+          {loading ? (
+            <ButtonLight disabled>
+              Loading
+              <Dots />
+            </ButtonLight>  
+          ) : (
+            <ButtonError onClick={onClickSave} disabled={!!inputError} id="confirm-save-endpoint">
+              <Text fontSize={20} fontWeight={500}>
+              {inputError ? inputError : 'Save'}
+              </Text>
+            </ButtonError>
+          )}
         </AutoRow>
       </Wrapper>
     </Modal>

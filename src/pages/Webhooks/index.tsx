@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import { Text } from 'rebass'
@@ -43,8 +43,10 @@ import {
   useCreateSubscriptionActionHandlers,
   useSelectSubscriptionActionHandlers,
   useDeleteSubscriptionCallback,
-  useUpdateSubscriptionCallback
+  useUpdateSubscriptionCallback,
+  useSubscribeCallback
 } from '../../state/subscriptions/hooks'
+import { useAllEventsResponse, useEventsApiState } from '../../state/events/hooks'
 
 
 const PageWrapper = styled(AutoColumn)``
@@ -112,11 +114,15 @@ export default function Webhooks() {
   const theme = useContext(ThemeContext)
   const { account } = useActiveWeb3React()
 
+  const [subscription, setSubscription] = useState<Subscription | null>(null)
   // toggle endpoints modal
   const toggleEndpointsModal = useToggleEndpointsModal()
   const toggleEventsModal = useToggleEventsModal()
   const toggleSecretModal = useToggleSharedSecretModal()
   const toggleDeleteModal = useToggleDeleteSubscriptionModal()
+
+  const eventState = useEventsApiState()
+  const allEvents = useAllEventsResponse()
 
   const state = useSubscriptionApiState()
   const { offset } = useSubscriptionsMetadata()
@@ -135,6 +141,8 @@ export default function Webhooks() {
   const isUpdate = selected.subscription.length > 0
   const { state: updateState, execute: handleUpdateSubscription } = useUpdateSubscriptionCallback()
 
+  const { state: subscribeState, execute: handleSubscribe } = useSubscribeCallback()
+
   function onClickDeleteSubscription(subscription: Subscription) {
     onSetSubsription(subscription)
     toggleDeleteModal()
@@ -146,6 +154,13 @@ export default function Webhooks() {
     toggleEndpointsModal()
   }
 
+  function onClickSubscriptionDetails(subscription: Subscription) {
+    onSetSubsription(subscription)
+    setSubscription(subscription)
+    toggleEventsModal()
+  }
+
+  const isLoading = state === ApiState.LOADING || eventState === ApiState.LOADING
   return (
     <>
       <PageWrapper gap="lg" justify="center">
@@ -161,7 +176,12 @@ export default function Webhooks() {
           loading={deleteState === ApiState.LOADING}
           onClickDelete={handleDeleteSubscription}
         />
-        <ManageEventsModal />
+        <ManageEventsModal 
+          subscription={subscription}
+          events={allEvents}
+          loading={subscribeState === ApiState.LOADING}
+          onSubmit={handleSubscribe}
+        />
         <SharedSecretModal />
         <TopSection gap="md">
           <VoteCard>
@@ -218,7 +238,7 @@ export default function Webhooks() {
                   Connect to a wallet to view your webhooks.
                 </TYPE.body>
               </Card>
-            ) : state === ApiState.LOADING ? (
+            ) : isLoading ? (
               <AutoColumn justify="center">
                 <Loader size="24px" />
               </AutoColumn>
@@ -238,7 +258,7 @@ export default function Webhooks() {
                       { s.endpoint }
                     </EndpointURL>
                     <ActionsDropdown 
-                      onClickDetails={toggleEventsModal}
+                      onClickDetails={() => onClickSubscriptionDetails(s)}
                       onClickUpdate={() => onClickUpdateSubscription(s)}
                       onClickDelete={() => onClickDeleteSubscription(s)}
                     />

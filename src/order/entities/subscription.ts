@@ -32,4 +32,10 @@ export class Subscription {
   public get events(): EventType[] {
     return this._events
   }
+
+  public isSubscribed(evt: EventType): boolean {
+    return this.events.some((e: EventType) => {
+      return e.isEqual(evt)
+    })
+  }
 }
