@@ -1,14 +1,58 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ApiState, useEventType } from '../../api'
+import { ApiState, useEventType, useTestEvent } from '../../api'
 import { useApiErrorPopup } from '../../hooks/useApiErrorPopup'
+import { useApiModalError } from '../../hooks/useApiModalError'
 import { EventType, EventTypeProps } from '../../order'
 import { useDerivedAuthState } from '../auth/hooks'
 import { AppDispatch, AppState } from '../index'
+import { useSubscriptionsState } from '../subscriptions/hooks'
 import { setApiState, setEvents } from './actions'
 
 export function useEventsState(): AppState['events'] {
   return useSelector<AppState, AppState['events']>((state) => state.events)
+}
+
+export function useTestEventCallback(): {
+  state: ApiState,
+  execute: (kind: string) => void
+} {
+  const { apikey } = useDerivedAuthState()
+  const { selected } = useSubscriptionsState()
+
+  const {
+    state,
+    error,
+    execute: testEvent
+  } = useTestEvent()
+
+  useApiModalError(error)
+
+  const handleSubmit = useCallback((kind: string) => {
+    if (!testEvent || !selected.subscription) {
+      return
+    }
+
+    testEvent({
+      headers: {
+        'X-SFPY-API-KEY': apikey?.pvtKey,
+      },
+      data: {
+        notification_service: {
+          notification: {
+            kind: kind,
+            subscription: selected.subscription
+          }
+        }
+      }
+    })
+    .catch(() => {})
+  }, [selected, testEvent, apikey])
+
+  return {
+    state: state,
+    execute: handleSubmit
+  }
 }
 
 export function useAllEventsResponse(): EventType[] | undefined {

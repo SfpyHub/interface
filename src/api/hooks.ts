@@ -18,7 +18,8 @@ import {
   EventTypeResponse,
   SharedSecretResponse,
   SubscriptionResponse,
-  SubscribeResponse
+  SubscribeResponse,
+  ExistsResponse
 } from './api'
 
 export type IOrderResponse = ApiResponse & { data?: OrderResponse }
@@ -32,6 +33,7 @@ export type IEventTypeResponse = ApiResponse & { data?: EventTypeResponse }
 export type ISharedSecretResponse = ApiResponse & { data?: SharedSecretResponse }
 export type ISubscriptionResponse = ApiResponse & { data?: SubscriptionResponse }
 export type ISubscribeResponse = ApiResponse & { data?: SubscribeResponse }
+export type IExistsResponse = ApiResponse & { data?: ExistsResponse }
 
 const BASE_URL = process.env.REACT_APP_BASE_URL
 
@@ -250,6 +252,34 @@ export function useCancelOrder(token: string): ApiResponse {
   }, [result])
 }
 
+export function useExistsWebhooks(): IExistsResponse {
+  const url = `${BASE_URL}/v1/notify/exists`
+  const result = usePostRequest(url)
+  return useMemo(() => {
+    const { data, state, error, execute } = result
+    return {
+      data: data?.data,
+      state,
+      error,
+      execute
+    }
+  }, [result])
+}
+
+export function useEnableWebhooks(): ISharedSecretResponse {
+  const url = `${BASE_URL}/v1/notify/merchant`
+  const result = usePostRequest(url)
+  return useMemo(() => {
+    const { data, state, error, execute } = result
+    return {
+      data: data?.data,
+      state,
+      error,
+      execute
+    }
+  }, [result])
+}
+
 export function useEventType(token: string): IEventTypeResponse {
   const url = `${BASE_URL}/v1/notify/events`
   const result = useApiRequest(url, token)
@@ -357,6 +387,20 @@ export function useUpdateSubscription(): ISubscriptionResponse {
 
 export function useSubscribe(): ISubscribeResponse {
   const url = `${BASE_URL}/v1/notify/subscribe`
+  const result = usePostRequest(url)
+  return useMemo(() => {
+    const { data, state, error, execute } = result
+    return {
+      data: data?.data,
+      state,
+      error,
+      execute
+    }
+  }, [result])
+}
+
+export function useTestEvent(): ApiResponse {
+  const url = `${BASE_URL}/v1/notify/test`
   const result = usePostRequest(url)
   return useMemo(() => {
     const { data, state, error, execute } = result

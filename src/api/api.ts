@@ -106,6 +106,10 @@ export type SubscribeResponse = {
   data?: SubscribedEventProps
 }
 
+export type ExistsResponse = {
+  data?: boolean
+}
+
 export enum ApiState {
   LOADING,
   SUCCESS,

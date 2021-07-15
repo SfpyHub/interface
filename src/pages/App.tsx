@@ -20,7 +20,7 @@ import SecurityWizard from './SignUp/SecurityWizard'
 import RequestPage from './Requests/RequestPage'
 import RemoveLiquidity from './RemoveLiquidity'
 import Refund from './Refund'
-import Webhooks from './Webhooks'
+import WebhookManager from './Webhooks'
 
 import { ProvideAuth, ProtectedRoute } from './Auth'
 
@@ -84,7 +84,7 @@ export default function App() {
                 <Route exact strict path="/" component={RedirectPathToLogin} />
                 <ProtectedRoute exact strict path="/create" component={Create} />
                 <ProtectedRoute exact strict path="/merchant" component={Merchant} />
-                <ProtectedRoute exact strict path="/webhooks" component={Webhooks} />
+                <ProtectedRoute exact strict path="/webhooks" component={WebhookManager} />
                 <ProtectedRoute exact strict path="/requests" component={Requests} />
                 <ProtectedRoute exact strict path="/request/:id" component={RequestPage} />
                 <ProtectedRoute exact strict path="/refund/:requestId/:paymentId" component={Refund} />

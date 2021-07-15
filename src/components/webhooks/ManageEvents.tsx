@@ -11,6 +11,8 @@ import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import useToggle from '../../hooks/useToggle'
 import useTheme from '../../hooks/useTheme'
 import { TYPE, LinkStyledButton } from '../../theme'
+import { useTestEventCallback } from '../../state/events/hooks'
+import { ApiState } from '../../api'
 
 const Wrapper = styled(Column)`
   width: 100%;
@@ -84,6 +86,8 @@ export function EventsRow({ active, event, onToggleEvent }: {
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement>()
   const [popperElement, setPopperElement] = useState<HTMLDivElement>()
 
+  const { state, execute: fireTestEvent } = useTestEventCallback()
+
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: 'auto',
     strategy: 'fixed',
@@ -91,6 +95,10 @@ export function EventsRow({ active, event, onToggleEvent }: {
   })
 
   useOnClickOutside(node, open ? toggle : undefined)
+
+  function onClickTestEvent() {
+    fireTestEvent(event.name)
+  }
 
   function onToggle() {
     setIsActive(!isActive)
@@ -113,7 +121,7 @@ export function EventsRow({ active, event, onToggleEvent }: {
             </ButtonEmpty>
             {open && (
               <PopoverContainer show={true} ref={setPopperElement as any} style={styles.popper} {...attributes.popper}>
-                <UnpaddedLinkStyledButton onClick={() => {}} disabled={false}>
+                <UnpaddedLinkStyledButton onClick={onClickTestEvent} disabled={state === ApiState.LOADING}>
                   Send test event
                 </UnpaddedLinkStyledButton>
               </PopoverContainer>
