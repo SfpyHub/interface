@@ -16,6 +16,7 @@ import { YellowCard } from '../Card'
 import Menu from '../Menu'
 import Settings from '../Settings'
 import AccountMenu from '../AccountMenu'
+import Logout from '../AccountMenu/Logout'
 
 import { ChainId } from '../../constants'
 
@@ -66,6 +67,7 @@ const HeaderControls = styled.div`
     height: 72px;
     border-radius: 12px 12px 0 0;
     background-color: ${({ theme }) => theme.bg1};
+    overflow-x: scroll;
   `}
 `
 
@@ -225,11 +227,6 @@ function Header({ history }: { history: any }) {
               Requests
             </StyledNavLink>
           )}
-          {loggedIn && (
-            <StyledNavLink id={`webhooks-nav-link`} to={'/webhooks'}>
-              Webhooks
-            </StyledNavLink>
-          )}
           <StyledNavLink
             id={`pool-nav-link`}
             to={'/pools'}
@@ -259,6 +256,7 @@ function Header({ history }: { history: any }) {
           <Settings />
           <Menu />
           {loggedIn && <AccountMenu />}
+          {loggedIn && <Logout />}
         </HeaderElementWrap>
       </HeaderControls>
     </HeaderFrame>

@@ -3,6 +3,9 @@ import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import { Eye, EyeOff } from 'react-feather'
 import { AppDispatch } from '../../state'
+import { AutoColumn } from '../../components/Column'
+import { RowBetween, AutoRow } from '../../components/Row'
+import { TYPE } from '../../theme'
 import { Wrapper } from '../../components/pay/styleds'
 import { ButtonSecondary } from '../../components/Button'
 import Copy from '../../components/AccountDetails/Copy'
@@ -11,6 +14,11 @@ import AppBody from '../AppBody'
 import { ApiState } from '../../api'
 import { useUpdateApiKeyCallback, useApiKeyResponse } from '../../state/apikey/hooks'
 import { setApiKey } from '../../state/auth/actions'
+
+const StyledAutoRow = styled(AutoRow)`
+  max-width: 420px;
+  padding-bottom: 20px;
+`
 
 const InfoCard = styled.div`
   padding: 1rem;
@@ -102,6 +110,15 @@ const KeyControl = styled.div`
   }
 `
 
+const TitleRow = styled(RowBetween)`
+  flex-direction: column;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+		flex-wrap: wrap;
+		gap: 12px;
+		width: 100%;
+	`};
+`
+
 export default function Developer() {
   const dispatch = useDispatch<AppDispatch>()
   const [revealed, setRevealed] = useState<boolean>(false)
@@ -123,59 +140,72 @@ export default function Developer() {
   }, [updateData, dispatch])
 
   return (
-    <AppBody>
-      <Wrapper>
-        <KeySection>
-          <YourKey>
-            <InfoCard>
-              <KeyGroupingRow>
-                {formatConnectorName()}
-                <div>
-                  <KeyAction
-                    style={{ fontSize: '0.825rem', fontWeight: 400 }}
-                    onClick={execute}
-                    disabled={updateState !== ApiState.SUCCESS}
-                  >
-                    Update
-                  </KeyAction>
-                </div>
-              </KeyGroupingRow>
-              <KeyGroupingRow id="web3-account-identifier-row">
-                {apikey?.pvtKey && (
-                  <KeyControl>
-                    <>
-                      <div>
-                        <p>{revealed ? shortenPvtKey(apikey?.pvtKey) : maskedText}</p>
-                      </div>
-                    </>
-                  </KeyControl>
-                )}
-              </KeyGroupingRow>
-              <KeyGroupingRow>
-                {apikey?.pvtKey && (
-                  <>
+    <>
+      <StyledAutoRow justify="center">
+        <AutoColumn gap="lg" justify="center">
+          <AutoColumn gap="lg" style={{ width: '100%' }}>
+            <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
+              <TYPE.mediumHeader style={{ marginTop: '0.5rem', justifySelf: 'flex-start' }}>
+                SFPY Api Key
+              </TYPE.mediumHeader>
+            </TitleRow>
+          </AutoColumn>
+        </AutoColumn>
+      </StyledAutoRow>
+      <AppBody>
+        <Wrapper>
+          <KeySection>
+            <YourKey>
+              <InfoCard>
+                <KeyGroupingRow>
+                  {formatConnectorName()}
+                  <div>
+                    <KeyAction
+                      style={{ fontSize: '0.825rem', fontWeight: 400 }}
+                      onClick={execute}
+                      disabled={updateState !== ApiState.SUCCESS}
+                    >
+                      Update
+                    </KeyAction>
+                  </div>
+                </KeyGroupingRow>
+                <KeyGroupingRow id="web3-account-identifier-row">
+                  {apikey?.pvtKey && (
                     <KeyControl>
-                      <div>
-                        <Copy toCopy={apikey.pvtKey}>
-                          <span style={{ marginLeft: '4px' }}>Copy Private Key</span>
-                        </Copy>
-                      </div>
-                      <AddressLink onClick={() => setRevealed(!revealed)}>
-                        {revealed ? <EyeOff size={16} /> : <Eye size={16} />}
-                        {revealed ? (
-                          <span style={{ marginLeft: '4px' }}>Hide Key</span>
-                        ) : (
-                          <span style={{ marginLeft: '4px' }}>Reveal Key</span>
-                        )}
-                      </AddressLink>
+                      <>
+                        <div>
+                          <p>{revealed ? shortenPvtKey(apikey?.pvtKey) : maskedText}</p>
+                        </div>
+                      </>
                     </KeyControl>
-                  </>
-                )}
-              </KeyGroupingRow>
-            </InfoCard>
-          </YourKey>
-        </KeySection>
-      </Wrapper>
-    </AppBody>
+                  )}
+                </KeyGroupingRow>
+                <KeyGroupingRow>
+                  {apikey?.pvtKey && (
+                    <>
+                      <KeyControl>
+                        <div>
+                          <Copy toCopy={apikey.pvtKey}>
+                            <span style={{ marginLeft: '4px' }}>Copy Private Key</span>
+                          </Copy>
+                        </div>
+                        <AddressLink onClick={() => setRevealed(!revealed)}>
+                          {revealed ? <EyeOff size={16} /> : <Eye size={16} />}
+                          {revealed ? (
+                            <span style={{ marginLeft: '4px' }}>Hide Key</span>
+                          ) : (
+                            <span style={{ marginLeft: '4px' }}>Reveal Key</span>
+                          )}
+                        </AddressLink>
+                      </KeyControl>
+                    </>
+                  )}
+                </KeyGroupingRow>
+              </InfoCard>
+            </YourKey>
+          </KeySection>
+        </Wrapper>
+      </AppBody>
+    </>
   )
 }

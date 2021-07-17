@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '../../state'
 import { Text } from 'rebass'
+import { AutoColumn } from '../../components/Column'
+import { RowBetween, AutoRow } from '../../components/Row'
+import { TYPE } from '../../theme'
 import { Wrapper, BottomGrouping, Dots } from '../../components/pay/styleds'
 import { ButtonError, ButtonLight } from '../../components/Button'
 import { EditMerchant } from '../../components/EditMerchant'
@@ -21,6 +24,11 @@ import { useActiveWeb3React } from '../../hooks/useWeb3'
 import { ApiState } from '../../api'
 import { setMerchant } from '../../state/auth/actions'
 
+const StyledAutoRow = styled(AutoRow)`
+  max-width: 420px;
+  padding-bottom: 20px;
+`
+
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
@@ -33,6 +41,15 @@ const Container = styled.div`
   border-radius: 20px;
   border: 1px solid ${({ theme }) => theme.bg2};
   background-color: ${({ theme }) => theme.bg1};
+`
+
+const TitleRow = styled(RowBetween)`
+  flex-direction: column;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+		flex-wrap: wrap;
+		gap: 12px;
+		width: 100%;
+	`};
 `
 
 export default function Profile() {
@@ -101,53 +118,66 @@ export default function Profile() {
   }, [updateData, dispatch])
 
   return (
-    <AppBody>
-      <Wrapper>
-        <AdditionalLinksModal
-          onUpdateLinks={setMerchantLinks}
-          savedWebsiteURL={merchant.websiteURL}
-          savedInstagramURL={merchant.instagramURL}
-          savedTwitterURL={merchant.twitterURL}
-        />
+    <>
+      <StyledAutoRow justify="center">
+        <AutoColumn gap="lg" justify="center">
+          <AutoColumn gap="lg" style={{ width: '100%' }}>
+            <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
+              <TYPE.mediumHeader style={{ marginTop: '0.5rem', justifySelf: 'flex-start' }}>
+                Update profile
+              </TYPE.mediumHeader>
+            </TitleRow>
+          </AutoColumn>
+        </AutoColumn>
+      </StyledAutoRow>
+      <AppBody>
+        <Wrapper>
+          <AdditionalLinksModal
+            onUpdateLinks={setMerchantLinks}
+            savedWebsiteURL={merchant.websiteURL}
+            savedInstagramURL={merchant.instagramURL}
+            savedTwitterURL={merchant.twitterURL}
+          />
 
-        <InputPanel>
-          <Container>
-            <EditMerchant
-              loading={state === ApiState.LOADING}
-              registeredName={merchant.name}
-              websiteURL={merchant.websiteURL}
-              instagramURL={merchant.instagramURL}
-              twitterURL={merchant.twitterURL}
-              bgImageUrl={merchant.backgroundImg}
-              bgImageLoading={bgImageLoading || state === ApiState.LOADING}
-              coverImageUrl={merchant.profileImg}
-              coverImageLoading={profileImageLoading || state === ApiState.LOADING}
-              onChangeBgImage={uploadBgImage}
-              onChangeCoverImage={uploadCoverImage}
-              onChangeName={setMerchantName}
-              onRemoveBgImage={removeBgImage}
-              onRemoveCoverImage={removeCoverImage}
-              onClickAddLink={toggleLinksModal}
-            />
-          </Container>
-        </InputPanel>
-        <BottomGrouping>
-          {!account ? (
-            <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
-          ) : state === ApiState.LOADING ? (
-            <ButtonLight disabled>
-              Loading
-              <Dots />
-            </ButtonLight>
-          ) : (
-            <ButtonError onClick={execute} id="update-merchant-button" disabled={!isValid} error={false}>
-              <Text fontSize={16} fontWeight={500}>
-                {merchantInputError ? merchantInputError : 'Save changes'}
-              </Text>
-            </ButtonError>
-          )}
-        </BottomGrouping>
-      </Wrapper>
-    </AppBody>
+          <InputPanel>
+            <Container>
+              <EditMerchant
+                loading={state === ApiState.LOADING}
+                registeredName={merchant.name}
+                websiteURL={merchant.websiteURL}
+                instagramURL={merchant.instagramURL}
+                twitterURL={merchant.twitterURL}
+                bgImageUrl={merchant.backgroundImg}
+                bgImageLoading={bgImageLoading || state === ApiState.LOADING}
+                coverImageUrl={merchant.profileImg}
+                coverImageLoading={profileImageLoading || state === ApiState.LOADING}
+                onChangeBgImage={uploadBgImage}
+                onChangeCoverImage={uploadCoverImage}
+                onChangeName={setMerchantName}
+                onRemoveBgImage={removeBgImage}
+                onRemoveCoverImage={removeCoverImage}
+                onClickAddLink={toggleLinksModal}
+              />
+            </Container>
+          </InputPanel>
+          <BottomGrouping>
+            {!account ? (
+              <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
+            ) : state === ApiState.LOADING ? (
+              <ButtonLight disabled>
+                Loading
+                <Dots />
+              </ButtonLight>
+            ) : (
+              <ButtonError onClick={execute} id="update-merchant-button" disabled={!isValid} error={false}>
+                <Text fontSize={16} fontWeight={500}>
+                  {merchantInputError ? merchantInputError : 'Save changes'}
+                </Text>
+              </ButtonError>
+            )}
+          </BottomGrouping>
+        </Wrapper>
+      </AppBody>
+    </>
   )
 }

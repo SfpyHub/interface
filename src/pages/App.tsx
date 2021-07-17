@@ -9,7 +9,8 @@ import Web3ReactManager from '../components/Web3ReactManager'
 import Pay from './Pay'
 import Create from './Create'
 import Pools from './Pools'
-import Merchant from './Merchant'
+import Profile from './Merchant/Profile'
+import Developer from './Merchant/Developer'
 import Requests from './Requests'
 import Signup from './SignUp'
 import Login from './Login'
@@ -21,6 +22,7 @@ import RequestPage from './Requests/RequestPage'
 import RemoveLiquidity from './RemoveLiquidity'
 import Refund from './Refund'
 import WebhookManager from './Webhooks'
+import Menu from './Menu'
 
 import { ProvideAuth, ProtectedRoute } from './Auth'
 
@@ -82,8 +84,10 @@ export default function App() {
                 <Route exact strict path="/pools" component={Pools} />
                 <Route exact strict path="/remove/:currencyId" component={RemoveLiquidity} />
                 <Route exact strict path="/" component={RedirectPathToLogin} />
+                <ProtectedRoute exact strict path="/menu" component={Menu} />
                 <ProtectedRoute exact strict path="/create" component={Create} />
-                <ProtectedRoute exact strict path="/merchant" component={Merchant} />
+                <ProtectedRoute exact strict path="/profile" component={Profile} />
+                <ProtectedRoute exact strict path="/developer" component={Developer} />
                 <ProtectedRoute exact strict path="/webhooks" component={WebhookManager} />
                 <ProtectedRoute exact strict path="/requests" component={Requests} />
                 <ProtectedRoute exact strict path="/request/:id" component={RequestPage} />
