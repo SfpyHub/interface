@@ -16,6 +16,7 @@ import { YellowCard } from '../Card'
 import Menu from '../Menu'
 import Settings from '../Settings'
 import AccountMenu from '../AccountMenu'
+import Logout from '../AccountMenu/Logout'
 
 import { ChainId } from '../../constants'
 
@@ -66,6 +67,7 @@ const HeaderControls = styled.div`
     height: 72px;
     border-radius: 12px 12px 0 0;
     background-color: ${({ theme }) => theme.bg1};
+    overflow-x: scroll;
   `}
 `
 
@@ -194,7 +196,8 @@ export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.ROPSTEN]: 'Ropsten',
   [ChainId.GÖRLI]: 'Görli',
   [ChainId.KOVAN]: 'Kovan',
-  [ChainId.GANACHE]: 'Ganache'
+  [ChainId.GANACHE]: 'Ganache',
+  [ChainId.MAINNET]: 'Mainnet'
 }
 
 function Header({ history }: { history: any }) {
@@ -253,6 +256,7 @@ function Header({ history }: { history: any }) {
           <Settings />
           <Menu />
           {loggedIn && <AccountMenu />}
+          {loggedIn && <Logout />}
         </HeaderElementWrap>
       </HeaderControls>
     </HeaderFrame>

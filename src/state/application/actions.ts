@@ -23,6 +23,10 @@ export enum ApplicationModal {
   SETTINGS,
   LINEITEM,
   LINKS,
+  ENDPOINT,
+  DEL_SUBSCRIPTION,
+  EVENTS,
+  SHAREDSECRET
 }
 
 export const updateBlockNumber = createAction<{ chainId: number; blockNumber: number }>('application/updateBlockNumber')
@@ -31,3 +35,8 @@ export const addPopup = createAction<{ key?: string; removeAfterMs?: number | nu
   'application/addPopup'
 )
 export const removePopup = createAction<{ key: string }>('application/removePopup')
+
+export const addModalError = createAction<{ key?: string; removeAfterMs?: number | null; content: PopupContent }>(
+  'application/addModalError'
+)
+export const removeModalError = createAction<{ key: string }>('application/removeModalError')

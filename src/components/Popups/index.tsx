@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useActivePopups } from '../../state/application/hooks'
+import { useActivePopups, useActiveModalErrors } from '../../state/application/hooks'
+import { PopupList } from '../../state/application/reducer'
 import { AutoColumn } from '../Column'
 import PopupItem from './PopupItem'
 
@@ -42,27 +43,44 @@ const FixedPopupColumn = styled(AutoColumn)<{ extraPadding?: boolean }>`
   `};
 `
 
-export default function Popups() {
-  // get all popups
-  const activePopups = useActivePopups()
-
+function PopupListComponent({ type, list }: { type: PopupType, list: PopupList }) {
   return (
     <>
       <FixedPopupColumn gap="20px">
-        {activePopups.map((item) => (
-          <PopupItem key={item.key} content={item.content} popKey={item.key} removeAfterMs={item.removeAfterMs} />
+        {list.map((item) => (
+          <PopupItem key={item.key} type={type} content={item.content} popKey={item.key} removeAfterMs={item.removeAfterMs} />
         ))}
       </FixedPopupColumn>
-      <MobilePopupWrapper height={activePopups?.length > 0 ? 'fit-content' : 0}>
+      <MobilePopupWrapper height={list?.length > 0 ? 'fit-content' : 0}>
         <MobilePopupInner>
-          {activePopups // reverse so new items up front
+          {list // reverse so new items up front
             .slice(0)
             .reverse()
             .map((item) => (
-              <PopupItem key={item.key} content={item.content} popKey={item.key} removeAfterMs={item.removeAfterMs} />
+              <PopupItem key={item.key} type={type} content={item.content} popKey={item.key} removeAfterMs={item.removeAfterMs} />
             ))}
         </MobilePopupInner>
       </MobilePopupWrapper>
     </>
   )
 }
+
+export enum PopupType {
+  MODAL = "MODAL",
+  STANDARD = "STANDARD"
+}
+
+export default function Popups() {
+  // get all popups
+  const activePopups = useActivePopups()
+
+  return <PopupListComponent type={PopupType.STANDARD} list={activePopups} />
+}
+
+export function ModalPopup() {
+  const activeErrors = useActiveModalErrors()
+
+  return <PopupListComponent type={PopupType.MODAL} list={activeErrors} />
+}
+
+

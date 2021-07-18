@@ -1,10 +1,9 @@
 import React from 'react'
-import { Grid } from 'react-feather'
+import { LogOut } from 'react-feather'
+import { useLogoutActionHandler } from '../../state/auth/hooks'
 import styled from 'styled-components'
 
-import { StyledInternalLink } from '../../theme'
-
-const StyledMenuIcon = styled(Grid)`
+const StyledMenuIcon = styled(LogOut)`
   height: 20px;
   width: 20px;
 
@@ -13,10 +12,7 @@ const StyledMenuIcon = styled(Grid)`
   }
 `
 
-const StyledMenuButton = styled(StyledInternalLink)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const StyledMenuButton = styled.button`
   width: 100%;
   height: 100%;
   border: none;
@@ -33,7 +29,11 @@ const StyledMenuButton = styled(StyledInternalLink)`
   :focus {
     cursor: pointer;
     outline: none;
-    background-color: ${({ theme }) => theme.bg4};
+    background-color: ${({ theme }) => theme.red1};
+  }
+
+  > svg {
+    margin-top: 2px;
   }
 `
 
@@ -47,10 +47,16 @@ const StyledMenu = styled.div`
   text-align: left;
 `
 
-export default function AccountMenu() {
+export default function Logout() {
+  const { logout } = useLogoutActionHandler()
+  
+  function handleLogout() {
+    logout()
+  }
+
   return (
     <StyledMenu>
-      <StyledMenuButton to="/menu">
+      <StyledMenuButton onClick={handleLogout}>
         <StyledMenuIcon />
       </StyledMenuButton>
     </StyledMenu>

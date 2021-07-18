@@ -4,7 +4,16 @@ import useAxios from 'axios-hooks'
 import { Method, AxiosPromise } from 'axios'
 import { ApiError } from './error'
 import { handleError } from './utils'
-import { OrderProps, MerchantProps, ApiKeyProps, PaymentProps } from '../order'
+import { 
+  OrderProps, 
+  MerchantProps, 
+  ApiKeyProps, 
+  PaymentProps,
+  EventTypeProps,
+  SharedSecretProps,
+  SubscriptionProps,
+  SubscribedEventProps
+} from '../order'
 
 export const fetcher = async (url, token) => {
   const res = await axios.get(url, {
@@ -80,6 +89,27 @@ export type PaymentResponse = {
   data?: PaymentProps
 }
 
+export type EventTypeResponse = {
+  data?: EventTypeProps
+}
+
+export type SharedSecretResponse = {
+  data?: SharedSecretProps
+}
+
+export type SubscriptionResponse = {
+  data?: SubscriptionProps
+  metadata?: Metadata
+}
+
+export type SubscribeResponse = {
+  data?: SubscribedEventProps
+}
+
+export type ExistsResponse = {
+  data?: boolean
+}
+
 export enum ApiState {
   LOADING,
   SUCCESS,
@@ -108,6 +138,10 @@ export function useApiRequest(url?: string, token?: string): ApiResponse {
 
 export function usePostRequest(url: string): ApiResponse {
   return useGenericRequest('POST', url)
+}
+
+export function useDeleteRequest(url: string): ApiResponse {
+  return useGenericRequest('DELETE', url)
 }
 
 export function usePutRequest(url: string): ApiResponse {
