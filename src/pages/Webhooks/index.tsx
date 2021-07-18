@@ -53,7 +53,7 @@ export default function WebhookManager() {
                 </RowBetween>
                 <ExternalLink
                   style={{ color: 'white', textDecoration: 'underline' }}
-                  href="https://uniswap.org/blog/uni"
+                  href="https://www.sfpy.co/docs/05-api/02-webhooks"
                   target="_blank"
                 >
                   <TYPE.white fontSize={14}>
