@@ -1,7 +1,7 @@
 import { ChainId } from './constants'
 
 export interface PaymentProps {
-  token?: string
+  payment_id?: string
   request_id?: string
   chain_id: ChainId
   state: string
@@ -26,7 +26,7 @@ export class Payment {
   private readonly rate?: string
 
   public constructor({
-    token,
+    payment_id,
     request_id,
     chain_id,
     state,
@@ -37,7 +37,7 @@ export class Payment {
     token_address,
     rate,
   }: PaymentProps) {
-    this.token = token ? token : undefined
+    this.token = payment_id ? payment_id : undefined
     this.requestId = request_id ? request_id : undefined
     this.chain = chain_id ? chain_id : undefined
     this.state = state ? state : undefined
