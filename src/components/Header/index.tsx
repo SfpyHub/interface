@@ -67,7 +67,6 @@ const HeaderControls = styled.div`
     height: 72px;
     border-radius: 12px 12px 0 0;
     background-color: ${({ theme }) => theme.bg1};
-    overflow-x: scroll;
   `}
 `
 

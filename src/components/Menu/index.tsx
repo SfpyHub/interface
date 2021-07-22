@@ -83,6 +83,12 @@ const MenuItem = styled(ExternalLink)`
   }
 `
 
+const SmallMenuItem = styled(MenuItem)`
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    display: none;
+  `}
+`
+
 export default function Menu() {
   const node = useRef<HTMLDivElement>()
   const open = useModalOpen(ApplicationModal.MENU)
@@ -101,10 +107,10 @@ export default function Menu() {
             <Info size={14} />
             About
           </MenuItem>
-          <MenuItem id="link" href="https://www.sfpy.co/docs">
+          <SmallMenuItem id="link" href="https://www.sfpy.co/docs">
             <BookOpen size={14} />
             Docs
-          </MenuItem>
+          </SmallMenuItem>
           <MenuItem id="link" href="https://github.com/sfpyhub">
             <Code size={14} />
             Code
