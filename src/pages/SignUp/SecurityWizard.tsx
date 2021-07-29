@@ -63,7 +63,7 @@ export default function SecurityWizard({ history }) {
 
   const handleSubmit = () => {
     if (activeTab === 'key') {
-      history.push(`/merchant`)
+      history.push(`/menu`)
       return
     }
 
@@ -72,7 +72,7 @@ export default function SecurityWizard({ history }) {
 
   useEffect(() => {
     if (success) {
-      history.push(`/merchant`)
+      history.push(`/menu`)
     }
   }, [success, history])
 

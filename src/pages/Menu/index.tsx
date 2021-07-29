@@ -3,7 +3,14 @@ import styled from 'styled-components'
 import { AutoColumn } from '../../components/Column'
 import { TYPE } from '../../theme'
 import { RowBetween, AutoRow } from '../../components/Row'
-import { UserItem, KeyItem, WebhookItem } from '../../components/AccountMenu/MenuItem'
+import { 
+  UserItem, 
+  KeyItem, 
+  WebhookItem,
+  CreateItem,
+  RequestsItem,
+  PoolsItem
+} from '../../components/AccountMenu/MenuItem'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -28,8 +35,6 @@ const TitleRow = styled(RowBetween)`
 `
 
 export default function Menu() {
-  
-
   return (
     <>
       <PageWrapper gap="lg" justify="center">
@@ -45,6 +50,9 @@ export default function Menu() {
           </AutoColumn>
         </TopSection>
         <MenuGrid>
+          <CreateItem />
+          <RequestsItem />
+          <PoolsItem />
           <UserItem />
           <KeyItem />
           <WebhookItem />

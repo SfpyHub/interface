@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { transparentize } from 'polished'
-import { User, Key, Zap } from 'react-feather'
+import { User, Key, Zap, Link, List, Layers } from 'react-feather'
 import { TYPE } from '../../theme'
 import { StyledInternalLink } from '../../theme'
 
@@ -18,8 +18,8 @@ export const Item = styled(StyledInternalLink)`
       rgba(255, 58, 212, 0.07) 0%, 
       rgba(255, 255, 255, 0.043) 100%), 
     radial-gradient(100% 97.16% at 0% 12.22%, 
-      ${transparentize(0.2, theme.primary5)} 0%, 
-      ${transparentize(0.2, theme.primary1)} 0%)
+      ${theme.primary5} 0%, 
+      ${theme.primary1} 0%)
   `};
     
 	border-radius: 12px;
@@ -61,12 +61,72 @@ const StyledZapIcon = styled(Zap)`
   }
 `
 
+const StyledLinkIcon = styled(Link)`
+  height: 40px;
+  width: 40px;
+
+  > * {
+    stroke: ${({ theme }) => theme.white};
+  }
+`
+
+const StyledListIcon = styled(List)`
+  height: 40px;
+  width: 40px;
+
+  > * {
+    stroke: ${({ theme }) => theme.white};
+  }
+`
+
+const StyledLayersIcon = styled(Layers)`
+  height: 40px;
+  width: 40px;
+
+  > * {
+    stroke: ${({ theme }) => theme.white};
+  }
+`
+
 export function UserItem() {
   return (
     <Item to="/profile">
       <StyledUserIcon />
       <TYPE.white>
         Profile
+      </TYPE.white>
+    </Item>
+  )
+}
+
+export function CreateItem() {
+  return (
+    <Item to="/create">
+      <StyledLinkIcon />
+      <TYPE.white>
+        Create
+      </TYPE.white>
+    </Item>
+  )
+}
+
+export function RequestsItem() {
+  return (
+    <Item to="/requests">
+      <StyledListIcon />
+      <TYPE.white>
+        Requests
+      </TYPE.white>
+    </Item>
+  )
+}
+
+export function PoolsItem() {
+  return (
+    <Item to="/pools">
+      <StyledLayersIcon />
+      <TYPE.white>
+        Pools
       </TYPE.white>
     </Item>
   )
